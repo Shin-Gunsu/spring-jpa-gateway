@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <title>Login</title>
 </head>
 <body>
+<form method="post" action="/login/process">
+    <span text="id" />id: <input type="text" name="id" /><br />
+    <span text="password" />password: <input type="password" name="password" /><br />
+    <input type="submit" />
+</form>
 
+<form method="get">
+    <a href="/register"></a>
+</form>
 </body>
 </html>
