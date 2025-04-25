@@ -1,5 +1,6 @@
-package com.nhnacademy.gateway.model;
+package com.nhnacademy.gateway.model.user;
 
+import com.nhnacademy.gateway.model.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

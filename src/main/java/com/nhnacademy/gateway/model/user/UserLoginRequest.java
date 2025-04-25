@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.model;
+package com.nhnacademy.gateway.model.user;
 
 import lombok.Getter;
 import lombok.Setter;

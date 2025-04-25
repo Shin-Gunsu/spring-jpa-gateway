@@ -6,8 +6,8 @@ import java.util.Locale;
 
 @Getter
 public class Requester {
-    private String ip;
-    private Locale lang;
+    private final String ip;
+    private final Locale lang;
     public Requester(String ip, Locale lang) {
         this.ip = ip;
         this.lang = lang;

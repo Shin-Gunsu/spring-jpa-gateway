@@ -1,8 +1,8 @@
 package com.nhnacademy.gateway.service;
 
-import com.nhnacademy.gateway.model.AuthedUser;
+import com.nhnacademy.gateway.model.user.AuthedUser;
 import com.nhnacademy.gateway.model.CustomUserDetails;
-import com.nhnacademy.gateway.model.User;
+import com.nhnacademy.gateway.model.user.User;
 import com.nhnacademy.gateway.model.exception.UserNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,6 +1,6 @@
 package com.nhnacademy.gateway.config;
 
-import com.nhnacademy.gateway.model.AuthedUser;
+import com.nhnacademy.gateway.model.user.AuthedUser;
 import com.nhnacademy.gateway.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -13,8 +13,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Random;
 import java.util.UUID;
 
 @Component
