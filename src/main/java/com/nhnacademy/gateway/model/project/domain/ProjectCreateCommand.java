@@ -11,5 +11,4 @@ import lombok.Setter;
 @Setter
 public class ProjectCreateCommand {
     private String name;
-    private String memberId;
 }

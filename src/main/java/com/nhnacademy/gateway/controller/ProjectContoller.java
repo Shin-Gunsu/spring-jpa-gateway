@@ -1,20 +1,14 @@
 package com.nhnacademy.gateway.controller;
 
-import ch.qos.logback.core.model.Model;
-import com.nhnacademy.gateway.model.project.domain.Project;
-import com.nhnacademy.gateway.model.project.domain.ProjectCreateCommand;
-import com.nhnacademy.gateway.model.project.domain.ProjectResponse;
-import com.nhnacademy.gateway.model.project.domain.ProjectStatusUpdateCommand;
+import com.nhnacademy.gateway.model.project.domain.*;
 import com.nhnacademy.gateway.model.project.service.ProjectService;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/projects")
@@ -29,26 +23,59 @@ public class ProjectContoller {
         this.redisTemplate = redisTemplate;
     }
 
-    @PostMapping
-    public ModelAndView createProject(@ModelAttribute ProjectCreateCommand command, HttpServletResponse request, HttpServletResponse response) {
-        ModelAndView mav = new ModelAndView("project");
+    @GetMapping
+    public ModelAndView getProjects() {
+        ModelAndView mav = new ModelAndView("projects-list");
         String memberId = (String) redisTemplate.opsForValue().get(SEESIONID);
-        command.setMemberId(memberId);
-        ProjectResponse createdProject = projectService.createProject(command);
+        List<ProjectResponse> response = projectService.findAllProject(memberId);
+        mav.addObject("projects", response);
+        return mav;
+    }
+
+    @GetMapping("/{id}")
+    public ModelAndView getProject(@PathVariable Long id) {
+        ModelAndView mav = new ModelAndView("project-view");
+        String memberId = (String) redisTemplate.opsForValue().get(SEESIONID);
+        ProjectResponse response = projectService.findProjectById(memberId,id);
+        response.setLinks();
+        mav.addObject("project", response);
+        mav.addObject("projectStatuses", ProjectStatus.values());
+        return mav;
+    }
+
+    @PostMapping
+    public ModelAndView createProject(@ModelAttribute ProjectCreateCommand command) {
+        ModelAndView mav = new ModelAndView("project-view");
+        String memberId = (String) redisTemplate.opsForValue().get(SEESIONID);
+        ProjectResponse createdProject = projectService.createProject(memberId,command);
+        createdProject.setLinks();
         mav.addObject("project", createdProject);
+        mav.addObject("projectStatuses", ProjectStatus.values());
         return mav;
     }
 
     @PatchMapping("/{id}")
-    public String updateProject(@ModelAttribute ProjectStatusUpdateCommand command,
-                                @PathVariable Long id) {
-        projectService.updateProjectStatus(id, command);
-        return "redirect:/projects";
+    public ModelAndView updateProject(@ModelAttribute ProjectStatusUpdateCommand command,
+                                      @PathVariable Long id) {
+        ModelAndView mav = new ModelAndView("project-view");
+        String memberId = (String) redisTemplate.opsForValue().get(SEESIONID);
+
+        ProjectResponse response =  projectService.updateProjectStatus(memberId,id, command);
+        response.setLinks();
+        mav.addObject("project", response);
+        mav.addObject("projectStatuses", ProjectStatus.values());
+        return mav;
     }
 
     @DeleteMapping("/{id}")
     public String deleteProject(@PathVariable Long id) {
-        projectService.deleteProject(id);
+        String memberId = (String) redisTemplate.opsForValue().get(SEESIONID);
+        projectService.deleteProject(memberId,id);
         return "redirect:/projects";
+    }
+
+    @GetMapping("/create")
+    public String createProjectForm() {
+        return "project-form";
     }
 }

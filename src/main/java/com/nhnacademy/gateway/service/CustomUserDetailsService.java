@@ -3,7 +3,7 @@ package com.nhnacademy.gateway.service;
 import com.nhnacademy.gateway.model.user.AuthedUser;
 import com.nhnacademy.gateway.model.CustomUserDetails;
 import com.nhnacademy.gateway.model.user.User;
-import com.nhnacademy.gateway.model.exception.UserNotFoundException;
+import com.nhnacademy.gateway.exception.UserNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

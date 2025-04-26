@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.model.exception;
+package com.nhnacademy.gateway.exception;
 
 public class InvalidPasswordException extends RuntimeException {
     public InvalidPasswordException(String message) {

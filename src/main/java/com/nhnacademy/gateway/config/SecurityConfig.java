@@ -52,33 +52,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomLogoutHandler customLogoutHandler) throws Exception {
 
-
-
-        http.csrf(AbstractHttpConfigurer::disable)
-                .formLogin((formLogin) ->
-                formLogin.loginPage("/login")
-                        .usernameParameter("id")
-                        .passwordParameter("password")
-                        .loginProcessingUrl("/login/process")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .failureHandler(customAuthenticationFailureHandler)
-
-        ).authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests.requestMatchers("/main").hasRole("REGISTERED")
-                        .requestMatchers("/login/**").permitAll()
-                        .anyRequest().authenticated()
-
-        ).logout((logout)->logout.deleteCookies("A-COOKIE", "B-COOKIE")
-                .invalidateHttpSession(true)
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                        .logoutSuccessHandler(customLogoutHandler)
-
-        )
-                .exceptionHandling(ex -> ex.accessDeniedPage("/403"));
-
-
-        http.addFilterBefore(new UserAuthenticationFilter(sessionRedisTemplate, passwordEncoder(), userService), UsernamePasswordAuthenticationFilter.class);
+//
+//
+//        http.csrf(AbstractHttpConfigurer::disable)
+//                .formLogin((formLogin) ->
+//                formLogin.loginPage("/login")
+//                        .usernameParameter("id")
+//                        .passwordParameter("password")
+//                        .loginProcessingUrl("/login/process")
+//                        .successHandler(customAuthenticationSuccessHandler)
+//                        .failureHandler(customAuthenticationFailureHandler)
+//
+//        ).authorizeHttpRequests(authorizeRequests ->
+//                authorizeRequests.requestMatchers("/main").hasRole("REGISTERED")
+//                        .requestMatchers("/login/**").permitAll()
+//                        .anyRequest().authenticated()
+//
+//        ).logout((logout)->logout.deleteCookies("A-COOKIE", "B-COOKIE")
+//                .invalidateHttpSession(true)
+//                .logoutUrl("/logout")
+//                .logoutSuccessUrl("/")
+//                        .logoutSuccessHandler(customLogoutHandler)
+//
+//        )
+//                .exceptionHandling(ex -> ex.accessDeniedPage("/403"));
+//
+//
+//        http.addFilterBefore(new UserAuthenticationFilter(sessionRedisTemplate, passwordEncoder(), userService), UsernamePasswordAuthenticationFilter.class);
 
 
 

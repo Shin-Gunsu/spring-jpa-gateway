@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.model.exception;
+package com.nhnacademy.gateway.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException() {

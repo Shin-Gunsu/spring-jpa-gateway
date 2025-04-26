@@ -10,5 +10,5 @@ import lombok.Setter;
 public class Project {
     private final long id;
     private String name;
-    private ProjectStatus statusCode;
+    private ProjectStatus status;
 }
