@@ -1,7 +1,8 @@
 package com.nhnacademy.gateway.config;
 
 import com.nhnacademy.gateway.model.user.AuthedUser;
-import com.nhnacademy.gateway.service.UserService;
+
+import com.nhnacademy.gateway.model.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>태스크 목록</title>
+</head>
+<body>
+<h1>태그 태스크 목록</h1>
+
+
+<ul th:if="${tasks != null and !tasks.isEmpty()}">
+    <li th:each="task : ${tasks}">
+        <a th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.id})}"
+           th:text="${task.name}">태스크 이름</a>
+    </li>
+</ul>
+
+<div th:if="${tasks == null or tasks.isEmpty()}">
+    <p>등록된 태스크가 없습니다.</p>
+</div>
+
+<div>
+    <a th:href="@{/projects/{projectId}/tags(projectId=${projectId})}">태그목록 돌아가기</a>
+</div>
+</body>
+</html>

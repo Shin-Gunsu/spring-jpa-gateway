@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>업무 추가</title>
+</head>
+<h1>새 업무 추가</h1>
+<body>
+<form method="post" th:action="@{/projects/{projectId}/tasks(projectId=${projectId})}">
+    <div>
+        <label for="name">업무 이름:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <button type="submit">업무 추가</button>
+        <a th:href="@{/projects/{projectId}/tasks(projectId=${projectId})}">취소</a>
+    </div>
+</form>
+
+</body>
+</html>

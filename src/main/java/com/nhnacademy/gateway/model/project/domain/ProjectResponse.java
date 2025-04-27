@@ -17,7 +17,7 @@ public class ProjectResponse {
     private String name;
     @JsonSerialize(using = ToStringSerializer.class)
     private ProjectStatus status;
-    private Map<String, Object> links;
+    private Map<String, String> links;
 
     public ProjectResponse(Project project) {
         this.id = project.getId();

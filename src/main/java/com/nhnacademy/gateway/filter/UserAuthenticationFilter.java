@@ -2,7 +2,8 @@ package com.nhnacademy.gateway.filter;
 
 import com.nhnacademy.gateway.model.user.AuthedUser;
 import com.nhnacademy.gateway.model.user.User;
-import com.nhnacademy.gateway.service.UserService;
+
+import com.nhnacademy.gateway.model.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

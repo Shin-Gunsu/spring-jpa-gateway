@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>태그 목록</title>
+</head>
+<body>
+<h1>프로젝트 태그 목록</h1>
+
+
+<form method="post" th:action="@{/projects/{projectId}/tags(projectId=${projectId})}">
+    <div>
+        <label for="name">태그 이름:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <button type="submit">태그 추가</button>
+    </div>
+</form>
+
+<ul th:if="${tags != null and !tags.isEmpty()}">
+    <li th:each="tag : ${tags}">
+        <a th:href="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.id})}"
+           th:text="${tag.name}">태그 이름</a>
+    </li>
+</ul>
+
+<div th:if="${tags == null or tags.isEmpty()}">
+    <p>등록된 태그가 없습니다.</p>
+</div>
+
+<div>
+    <a th:href="@{/projects/{projectId}(projectId=${projectId})}">프로젝트로 돌아가기</a>
+</div>
+</body>
+</html>

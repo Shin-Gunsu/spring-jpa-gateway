@@ -9,7 +9,8 @@ import com.nhnacademy.gateway.model.project.domain.ProjectStatus;
 import com.nhnacademy.gateway.model.project.domain.ProjectStatusUpdateCommand;
 import com.nhnacademy.gateway.model.project.service.ProjectService;
 import com.nhnacademy.gateway.model.user.User;
-import com.nhnacademy.gateway.service.UserService;
+
+import com.nhnacademy.gateway.model.user.service.UserService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.service;
+package com.nhnacademy.gateway.model.user.service;
 
 import com.nhnacademy.gateway.model.user.User;
 import com.nhnacademy.gateway.model.user.UserCreateCommand;

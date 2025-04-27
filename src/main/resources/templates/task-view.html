@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>업무 상세</title>
+</head>
+<body>
+<h1>업무 상세 정보</h1>
+
+<div th:if="${task != null}">
+    <p><strong>이름:</strong> <span th:text="${task.name}">업무 이름</span></p>
+    <p th:if="${task.milestone != null}"><strong>마일스톤:</strong> <span th:text="${task.milestone}">마일스톤</span></p>
+    <p><strong>생성 시간:</strong> <span th:text="${task.createdAt}">생성 시간</span></p>
+
+    <h2>관련 링크</h2>
+    <ul th:if="${task.getLinks() != null}">
+        <li th:each="link : ${task.getLinks()}">
+            <a th:href="${link.value}" th:text="${link.key}">링크 명</a>
+        </li>
+    </ul>
+</div>
+
+<div th:unless="${task != null}">
+    <p>업무 정보를 찾을 수 없습니다.</p>
+</div>
+
+<div>
+    <h2>업무 관리</h2>
+
+<!--    <form th:action="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.id})}" th:method="PATCH">-->
+<!--        <label for="name">업무 이름:</label>-->
+<!--        <input type="text" id="name" name="name" th:value="${task.name}" />-->
+<!--        <button type="submit">업무 수정</button>-->
+<!--    </form>-->
+
+    <form th:action="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.id})}" th:method="DELETE">
+        <button type="submit">업무 삭제</button>
+    </form>
+
+    <a th:href="@{/projects/{id}(id=${projectId})}">프로젝트 상세로 돌아가기</a>
+</div>
+</body>
+</html>
