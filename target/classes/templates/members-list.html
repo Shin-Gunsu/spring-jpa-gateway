@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>프로젝트 멤버 목록</title>
+</head>
+<body>
+<h1>멤버 목록</h1>
+
+<div>
+    <a th:href="@{/projects/{id}/members/new(id=${id})}">새 멤버 추가</a>
+</div>
+
+<ul th:if="${members != null and !members.isEmpty()}">
+    <li th:each="member : ${members}">
+        <a th:href="@{/projects/{id}/members/{memberId}(id=${id}, memberId=${member.memberId})}" th:text="${member.memberId}">멤버 ID</a>
+        <span th:text="'[' + ${member.auth} + ']'">권한</span>
+        <form th:action="@{/projects/{id}/members/{memberId}(id=${id}, memberId=${member.memberId})}" th:method="DELETE" style="display: inline;">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit">삭제</button>
+        </form>
+    </li>
+</ul>
+
+<div th:if="${members == null or members.isEmpty()}">
+    <p>프로젝트에 등록된 멤버가 없습니다.</p>
+</div>
+<a th:href="@{/projects}">프로젝트 목록으로 돌아가기</a>
+</body>
+</html>

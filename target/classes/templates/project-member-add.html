@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>프로젝트 멤버 추가</title>
+</head>
+<body>
+<h1>프로젝트 멤버 추가</h1>
+
+<form th:action="@{/projects/{id}/members(id=${id})}" method="post">
+    <div>
+        <label for="memberId">멤버 ID:</label>
+        <input type="text" id="memberId" name="memberId" required>
+    </div>
+
+    <select name="auth">
+        <option th:each="auth : ${auths}"
+                th:value="${auth}"
+                th:text="${auth}">
+        </option>
+    </select>
+
+    <div style="margin-top: 20px;">
+        <button type="submit">멤버 추가</button>
+        <a th:href="@{/projects/{id}/members(id=${id})}">취소</a>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,25 @@
+package com.nhnacademy.gateway.model.member.domain;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nhnacademy.gateway.model.Status;
+import com.nhnacademy.gateway.model.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MemberInfoResponse {
+    @JsonProperty("member_id")
+    private String id;
+    private String email;
+    private String status;
+
+
+    public MemberInfoResponse(User user,Auth auth) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.status = user.getStatus();
+    }
+}

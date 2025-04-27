@@ -1,8 +1,10 @@
 package com.nhnacademy.gateway.model.project.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.gateway.exception.ProjectNotFoundException;
-import com.nhnacademy.gateway.model.project.domain.*;
+import com.nhnacademy.gateway.model.member.domain.MemberCreateCommand;
+import com.nhnacademy.gateway.model.project.domain.ProjectCreateCommand;
+import com.nhnacademy.gateway.model.project.domain.ProjectResponse;
+import com.nhnacademy.gateway.model.project.domain.ProjectStatusUpdateCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -94,7 +96,7 @@ public class ProjectService {
         headers.set(X_MEMBER_ID, memberId);
 
         Map<String, Object> statusUpdate = new HashMap<>();
-        statusUpdate.put("status_code", command.getStatus().getCode());
+        statusUpdate.put("status", command.getStatus().toString());
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(statusUpdate, headers);
 
@@ -133,6 +135,62 @@ public class ProjectService {
             throw new RuntimeException("Failed to delete project: " + id, e);
         } catch (ResourceAccessException e) {
             throw new RuntimeException("서버 연결 오류: " + e.getMessage(), e);
+        }
+    }
+
+    public List<MemberCreateCommand> findAllProjectMembers(String memberId, long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(X_MEMBER_ID, memberId);
+
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<List<MemberCreateCommand>> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{id}/members",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<MemberCreateCommand>>() {},
+                id
+        );
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("findAllProjectMembers");
+        }
+        return response.getBody();
+    }
+
+    public void addProjectMember(String memberId, MemberCreateCommand userIdDto , long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(X_MEMBER_ID, memberId);
+        HttpEntity<MemberCreateCommand> requestEntity = new HttpEntity<>(userIdDto, headers);
+
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{id}/members",
+                HttpMethod.POST,
+                requestEntity,
+                Void.class,
+                id
+        );
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("addProjectMember");
+        }
+    }
+
+    public void deleteMember(String memberId, long id, String deleteMemberId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(X_MEMBER_ID, memberId);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{id}/members/{delteMemberId}/delete",
+                HttpMethod.POST,
+                requestEntity,
+                Void.class,
+                id,
+                deleteMemberId
+        );
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("deleteMember" + statusCode);
         }
     }
 }
