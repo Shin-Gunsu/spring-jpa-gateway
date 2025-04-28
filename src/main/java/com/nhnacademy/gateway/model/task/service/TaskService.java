@@ -1,13 +1,10 @@
 package com.nhnacademy.gateway.model.task.service;
 
-import com.nhnacademy.gateway.model.project.domain.ProjectCreateCommand;
-import com.nhnacademy.gateway.model.project.domain.ProjectResponse;
-import com.nhnacademy.gateway.model.tag.domain.TagIdOnlyResponse;
+import com.nhnacademy.gateway.model.tag.domain.TagIdOnlyRequest;
 import com.nhnacademy.gateway.model.task.domain.TaskCreateCommand;
 import com.nhnacademy.gateway.model.task.domain.TaskListResponse;
 import com.nhnacademy.gateway.model.task.domain.TaskResponse;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +17,7 @@ public class TaskService {
     private final RestTemplate restTemplate;
     private final String X_MEMBER_ID = "X-Member-Id";
 
-    public TaskService(RestTemplate restTemplate, RedisTemplate<String, String> redisTemplate) {
+    public TaskService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -127,8 +124,8 @@ public class TaskService {
 
     public void addTagToTask(Long projectId, Long taskId, Long tagId ) {
         HttpHeaders headers = new HttpHeaders();
-        TagIdOnlyResponse tagRequest = new TagIdOnlyResponse(tagId);
-        HttpEntity<TagIdOnlyResponse> requestEntity = new HttpEntity<>(tagRequest, headers);
+        TagIdOnlyRequest tagRequest = new TagIdOnlyRequest(tagId);
+        HttpEntity<TagIdOnlyRequest> requestEntity = new HttpEntity<>(tagRequest, headers);
         ResponseEntity<Void> response = restTemplate.exchange(
                 "http://localhost:8081/api/projects/{projectId}/tasks/{taskId}/tags",
                 HttpMethod.POST,
@@ -161,5 +158,24 @@ public class TaskService {
         if (!statusCode.is2xxSuccessful()) {
             throw new RuntimeException("Task tag 추가 실패: " + statusCode);
         }
+    }
+
+    public List<TaskListResponse> findAllByMilestone(Long projectId, Long milestoneid) {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<List<TaskListResponse>> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{projectid}/milestones/{milestoneid}/tasks",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<TaskListResponse>>() {},
+                projectId,
+                milestoneid
+        );
+
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("Task tag 추가 실패: " + statusCode);
+        }
+        return response.getBody();
     }
 }

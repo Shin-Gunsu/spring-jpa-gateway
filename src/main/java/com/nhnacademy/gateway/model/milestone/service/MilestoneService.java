@@ -3,12 +3,11 @@ package com.nhnacademy.gateway.model.milestone.service;
 import com.nhnacademy.gateway.model.milestone.domain.MilestoneCreateCommand;
 import com.nhnacademy.gateway.model.milestone.domain.MilestoneDetailResponse;
 import com.nhnacademy.gateway.model.milestone.domain.MilestoneListResponse;
+import com.nhnacademy.gateway.model.task.domain.TaskIdOnlyRequest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class MilestoneService {
         HttpEntity<MilestoneCreateCommand> requestEntity = new HttpEntity<>(command, headers);
         ResponseEntity<MilestoneDetailResponse> response = restTemplate.exchange(
                 "http://localhost:8081/api/projects/{projectId}/milestones",
-                HttpMethod.GET,
+                HttpMethod.POST,
                 requestEntity,
                 MilestoneDetailResponse.class,
                 projectId
@@ -55,7 +54,7 @@ public class MilestoneService {
 
         HttpStatusCode statusCode =response.getStatusCode();
         if(!statusCode.is2xxSuccessful()){
-            throw new RuntimeException("마일스톤 조회 실패");
+            throw new RuntimeException("마일스톤 추가 실패");
         }
         return response.getBody();
     }
@@ -69,7 +68,8 @@ public class MilestoneService {
                 HttpMethod.GET,
                 requestEntity,
                 MilestoneDetailResponse.class,
-                projectId
+                projectId,
+                milestoneId
         );
 
         HttpStatusCode statusCode =response.getStatusCode();
@@ -77,5 +77,67 @@ public class MilestoneService {
             throw new RuntimeException("마일스톤 조회 실패");
         }
         return response.getBody();
+    }
+
+    public void deleteMilestone(Long projectId, Long milestoneId) {
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{projectId}/milestones/{milestoneId}/delete",
+                HttpMethod.POST,
+                requestEntity,
+                Void.class,
+                projectId,
+                milestoneId
+        );
+
+        HttpStatusCode statusCode =response.getStatusCode();
+        if(!statusCode.is2xxSuccessful()){
+            throw new RuntimeException("마일스톤 삭제 실패");
+        }
+    }
+
+
+    public void addTaskToMilestone(Long projectId, Long milestoneId, Long taskId) {
+        HttpHeaders headers = new HttpHeaders();
+
+        TaskIdOnlyRequest taskIdOnlyRequest = new TaskIdOnlyRequest(taskId);
+        
+        HttpEntity<TaskIdOnlyRequest> requestEntity = new HttpEntity<>(taskIdOnlyRequest, headers);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{projectId}/milestones/{milestoneId}/tasks",
+                HttpMethod.POST,
+                requestEntity,
+                Void.class,
+                projectId,
+                milestoneId
+        );
+
+        HttpStatusCode statusCode =response.getStatusCode();
+        if(!statusCode.is2xxSuccessful()){
+            throw new RuntimeException("마일스톤 태스크 추가 실패");
+        }
+    }
+
+    public void deleteTaskToMilestone(Long projectId, Long milestoneId, Long taskId) {
+        HttpHeaders headers = new HttpHeaders();
+
+
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{projectId}/milestones/{milestoneId}/tasks/{taskId}/delete",
+                HttpMethod.POST,
+                requestEntity,
+                Void.class,
+                projectId,
+                milestoneId,
+                taskId
+        );
+
+        HttpStatusCode statusCode =response.getStatusCode();
+        if(!statusCode.is2xxSuccessful()){
+            throw new RuntimeException("마일스톤 태스크 추가 실패");
+        }
     }
 }

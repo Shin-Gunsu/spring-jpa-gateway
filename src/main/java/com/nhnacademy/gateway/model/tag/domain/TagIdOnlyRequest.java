@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagIdOnlyResponse {
+public class TagIdOnlyRequest {
     @JsonProperty("tag_id")
     private long tagId;
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마일스톤 생성</title>
+</head>
+<body>
+<h1>마일스톤 생성</h1>
+
+<form th:action="@{/projects/{projectId}/milestones(projectId=${projectId})}" method="post">
+    <div>
+        <label for="name">마일스톤 이름:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <label for="startDate">시작 날짜:</label>
+        <input type="date" id="startDate" name="startDate" required>
+    </div>
+    <div>
+        <label for="endDate">종료 날짜:</label>
+        <input type="date" id="endDate" name="endDate" required>
+    </div>
+    <div>
+        <button type="submit">마일스톤 생성</button>
+    </div>
+</form>
+
+<div>
+    <a th:href="@{/projects/{projectId}/milestones(projectId=${projectId})}">마일스톤 목록으로 돌아가기</a>
+</div>
+</body>
+</html>

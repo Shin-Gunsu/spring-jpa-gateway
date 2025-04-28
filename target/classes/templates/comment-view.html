@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>댓글 상세</title>
+</head>
+<body>
+<h1>댓글 상세 정보</h1>
+
+<div th:if="${comment != null}">
+    <p><strong>작성자:</strong> <span th:text="${comment.memberId}">작성자 ID</span></p>
+    <p><strong>내용:</strong> <span th:text="${comment.content}">댓글 내용</span></p>
+    <p><strong>작성일:</strong> <span th:text="${comment.createdAt}">작성일시</span></p>
+
+    <div th:if="${loginMemberId == comment.memberId}">
+        <h2>댓글 관리</h2>
+
+        <div>
+            <h3>댓글 수정</h3>
+            <form th:action="@{/projects/{projectId}/tasks/{taskId}/comments/{commentId}(projectId=${projectId}, taskId=${taskId}, commentId=${comment.id})}" th:method="PATCH">
+                <input type="hidden" name="_method" value="PATCH"/>
+                <label for="content">댓글 내용:</label>
+                <textarea id="content" name="content" th:text="${comment.content}" rows="4" cols="50"></textarea>
+                <button type="submit">수정하기</button>
+            </form>
+        </div>
+
+        <form th:action="@{/projects/{projectId}/tasks/{taskId}/comments/{commentId}(projectId=${projectId}, taskId=${taskId}, commentId=${comment.id})}" method="post">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <button type="submit">댓글 삭제</button>
+        </form>
+    </div>
+</div>
+
+<div th:unless="${comment != null}">
+    <p>댓글 정보를 찾을 수 없습니다.</p>
+</div>
+
+<div>
+    <p>
+        <a th:href="@{/projects/{projectId}/tasks/{taskId}/comments(projectId=${projectId}, taskId=${taskId})}">모든 댓글 목록으로 돌아가기</a>
+    </p>
+</div>
+</body>
+</html>
