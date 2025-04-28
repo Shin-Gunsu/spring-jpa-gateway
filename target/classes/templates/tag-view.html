@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>태그 조회</title>
+</head>
+<body>
+<h1>태그 정보</h1>
+
+<div th:if="${tag != null}">
+  <p><strong>이름:</strong> <span th:text="${tag.name}">태그명</span></p>
+
+  <h2>태그 관리</h2>
+
+  <div>
+    <h3>태그 수정</h3>
+    <form th:action="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.id})}" th:method="PATCH">
+      <input type="hidden" name="_method" value="PATCH"/>
+      <label for="name">태그 이름:</label>
+      <input type="text" id="name" name="name" th:value="${tag.name}" />
+      <button type="submit">수정하기</button>
+    </form>
+  </div>
+
+  <p>
+    <a th:href="@{/projects/{projectId}/tags/{tagId}/tasks(projectId=${projectId}, tagId=${tag.id})}">
+      이 태그가 설정된 태스크 보기
+    </a>
+  </p>
+
+
+  <form th:action="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.id})}" method="post">
+    <input type="hidden" name="_method" value="DELETE"/>
+    <button type="submit">태그 삭제</button>
+  </form>
+</div>
+
+<div th:unless="${tag != null}">
+  <p>태그 정보를 찾을 수 없습니다.</p>
+</div>
+
+<div>
+  <p>
+    <a th:href="@{/projects/{projectId}/tags(projectId=${projectId})}">모든 태그 목록으로 돌아가기</a>
+  </p>
+</div>
+</body>
+</html>

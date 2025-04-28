@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberCreateCommand {
+public class ProjectMemberCreateCommand {
     @JsonProperty("member_id")
     private String memberId;
     @JsonSerialize(using = ToStringSerializer.class)

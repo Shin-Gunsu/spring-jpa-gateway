@@ -1,5 +1,7 @@
 package com.nhnacademy.gateway.controller;
 
+import com.nhnacademy.gateway.model.tag.domain.TagResponse;
+import com.nhnacademy.gateway.model.tag.service.TagService;
 import com.nhnacademy.gateway.model.task.domain.TaskCreateCommand;
 import com.nhnacademy.gateway.model.task.domain.TaskListResponse;
 import com.nhnacademy.gateway.model.task.domain.TaskResponse;
@@ -17,9 +19,11 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
+    private final TagService tagService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, TagService tagService) {
         this.taskService = taskService;
+        this.tagService = tagService;
     }
 
     @PostMapping
@@ -76,4 +80,34 @@ public class TaskController {
         return "redirect:/projects/{projectId}/tasks";
     }
 
+    @GetMapping("/{taskId}/tags")
+    public ModelAndView findAllTaskTags(@PathVariable("projectId") Long projectId, @PathVariable("taskId") Long taskId) {
+        ModelAndView mav = new ModelAndView("task-tags-list");
+        List<TagResponse> tags = tagService.findAllByProjectId(projectId);
+        List<TagResponse> taskTags = tagService.findAllByTaskId(projectId,taskId);
+        mav.addObject("tags", tags);
+        mav.addObject("taskTags", taskTags);
+        mav.addObject("projectId", projectId);
+        mav.addObject("taskId", taskId);
+        return mav;
+    }
+
+    @PostMapping("/{taskId}/tags")
+    public String addTag(
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("taskId") Long taskId,
+            @RequestParam("tagId") Long tagId) {
+
+        taskService.addTagToTask(projectId,taskId, tagId);
+        return "redirect:/projects/" + projectId + "/tasks/" + taskId + "/tags";
+    }
+
+    @DeleteMapping("/{taskId}/tags/{tagId}")
+    public String deleteTag(
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("taskId") Long taskId,
+            @PathVariable("tagId") Long tagId) {
+        taskService.deleteTagToTask(projectId,taskId,tagId);
+        return "redirect:/projects/" + projectId + "/tasks/" + taskId + "/tags";
+    }
 }

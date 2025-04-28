@@ -136,4 +136,24 @@ public class TagService {
             throw new RuntimeException("태그 삭제 실패: " + statusCode);
         }
     }
+
+    public List<TagResponse> findAllByTaskId(Long projectId, Long taskId) {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<List<TagResponse>> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{projectId}/tasks/{taskId}/tags",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<TagResponse>>() {},
+                projectId,
+                taskId
+        );
+
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("태그 수정 실패: " + statusCode);
+        }
+        return response.getBody();
+    }
 }

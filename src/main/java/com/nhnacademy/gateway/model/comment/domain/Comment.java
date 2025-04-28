@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.model.comment;
+package com.nhnacademy.gateway.model.comment.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

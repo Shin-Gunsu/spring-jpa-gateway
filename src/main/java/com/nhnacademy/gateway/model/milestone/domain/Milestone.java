@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.model.milestone;
+package com.nhnacademy.gateway.model.milestone.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,6 @@ public class Milestone {
     private final long id;
     private long projectId;
     private String name;
-    private boolean hasPeriod;
     private ZonedDateTime startDate;
     private ZonedDateTime endDate;
 }

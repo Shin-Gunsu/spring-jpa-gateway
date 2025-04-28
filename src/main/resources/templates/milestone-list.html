@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마일스톤 목록</title>
+</head>
+<body>
+<h1>프로젝트 마일스톤 목록</h1>
+
+<div>
+    <a th:href="@{/projects/{projectId}/milestones/create(projectId=${projectId})}">새 마일스톤 생성</a>
+</div>
+
+<ul th:if="${milestones != null and !milestones.isEmpty()}">
+    <li th:each="milestone : ${milestones}">
+        <a th:href="@{/projects/{projectId}/milestones/{milestoneId}(projectId=${projectId}, milestoneId=${milestone.id})}"
+           th:text="${milestone.name}">마일스톤 이름</a>
+    </li>
+</ul>
+
+<div th:if="${milestones == null or milestones.isEmpty()}">
+    <p>등록된 마일스톤이 없습니다.</p>
+</div>
+
+<div>
+    <a th:href="@{/projects/{projectId}/milestones(projectId=${projectId})}">마일스톤 목록 돌아가기</a>
+</div>
+</body>
+</html>

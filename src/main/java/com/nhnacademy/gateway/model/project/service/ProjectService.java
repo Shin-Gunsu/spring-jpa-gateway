@@ -1,7 +1,7 @@
 package com.nhnacademy.gateway.model.project.service;
 
 import com.nhnacademy.gateway.exception.ProjectNotFoundException;
-import com.nhnacademy.gateway.model.member.domain.MemberCreateCommand;
+import com.nhnacademy.gateway.model.member.domain.ProjectMemberCreateCommand;
 import com.nhnacademy.gateway.model.project.domain.ProjectCreateCommand;
 import com.nhnacademy.gateway.model.project.domain.ProjectResponse;
 import com.nhnacademy.gateway.model.project.domain.ProjectStatusUpdateCommand;
@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -115,6 +116,7 @@ public class ProjectService {
         return response.getBody();
     }
 
+    @Transactional
     public void deleteProject(String memberId, long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(X_MEMBER_ID, memberId);
@@ -138,17 +140,17 @@ public class ProjectService {
         }
     }
 
-    public List<MemberCreateCommand> findAllProjectMembers(String memberId, long id) {
+    public List<ProjectMemberCreateCommand> findAllProjectMembers(String memberId, long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(X_MEMBER_ID, memberId);
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
 
-        ResponseEntity<List<MemberCreateCommand>> response = restTemplate.exchange(
+        ResponseEntity<List<ProjectMemberCreateCommand>> response = restTemplate.exchange(
                 "http://localhost:8081/api/projects/{id}/members",
                 HttpMethod.GET,
                 requestEntity,
-                new ParameterizedTypeReference<List<MemberCreateCommand>>() {},
+                new ParameterizedTypeReference<List<ProjectMemberCreateCommand>>() {},
                 id
         );
         HttpStatusCode statusCode = response.getStatusCode();
@@ -158,10 +160,11 @@ public class ProjectService {
         return response.getBody();
     }
 
-    public void addProjectMember(String memberId, MemberCreateCommand userIdDto , long id) {
+    @Transactional
+    public void addProjectMember(String memberId, ProjectMemberCreateCommand userIdDto , long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(X_MEMBER_ID, memberId);
-        HttpEntity<MemberCreateCommand> requestEntity = new HttpEntity<>(userIdDto, headers);
+        HttpEntity<ProjectMemberCreateCommand> requestEntity = new HttpEntity<>(userIdDto, headers);
 
         ResponseEntity<Void> response = restTemplate.exchange(
                 "http://localhost:8081/api/projects/{id}/members",
@@ -176,12 +179,13 @@ public class ProjectService {
         }
     }
 
+    @Transactional
     public void deleteMember(String memberId, long id, String deleteMemberId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(X_MEMBER_ID, memberId);
         HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:8081/api/projects/{id}/members/{delteMemberId}/delete",
+                "http://localhost:8081/api/projects/{id}/members/{deleteMemberId}/delete",
                 HttpMethod.POST,
                 requestEntity,
                 Void.class,

@@ -2,6 +2,7 @@ package com.nhnacademy.gateway.model.task.service;
 
 import com.nhnacademy.gateway.model.project.domain.ProjectCreateCommand;
 import com.nhnacademy.gateway.model.project.domain.ProjectResponse;
+import com.nhnacademy.gateway.model.tag.domain.TagIdOnlyResponse;
 import com.nhnacademy.gateway.model.task.domain.TaskCreateCommand;
 import com.nhnacademy.gateway.model.task.domain.TaskListResponse;
 import com.nhnacademy.gateway.model.task.domain.TaskResponse;
@@ -122,5 +123,43 @@ public class TaskService {
             throw new RuntimeException("Task 목록 조회 실패: " + statusCode);
         }
         return response.getBody();
+    }
+
+    public void addTagToTask(Long projectId, Long taskId, Long tagId ) {
+        HttpHeaders headers = new HttpHeaders();
+        TagIdOnlyResponse tagRequest = new TagIdOnlyResponse(tagId);
+        HttpEntity<TagIdOnlyResponse> requestEntity = new HttpEntity<>(tagRequest, headers);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{projectId}/tasks/{taskId}/tags",
+                HttpMethod.POST,
+                requestEntity,
+                Void.class,
+                projectId,
+                taskId
+        );
+
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("Task tag 추가 실패: " + statusCode);
+        }
+    }
+
+    public void deleteTagToTask(Long projectId, Long taskId, Long tagId) {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "http://localhost:8081/api/projects/{projectId}/tasks/{taskId}/tags/{tagId}/delete",
+                HttpMethod.POST,
+                requestEntity,
+                Void.class,
+                projectId,
+                taskId,
+                tagId
+        );
+
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("Task tag 추가 실패: " + statusCode);
+        }
     }
 }

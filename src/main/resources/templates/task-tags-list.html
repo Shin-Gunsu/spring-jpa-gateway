@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>업무 태그 관리</title>
+</head>
+<body>
+<h1>업무 태그 관리</h1>
+
+<div th:if="${tags != null and !tags.isEmpty()}">
+    <h2>태그 추가</h2>
+    <ul>
+        <li th:each="tag : ${tags}">
+            <span th:text="${tag.name}">태그 이름</span>
+            <form th:action="@{/projects/{projectId}/tasks/{taskId}/tags(projectId=${projectId}, taskId=${taskId})}"
+                  method="post" style="display: inline;">
+                <input type="hidden" name="tagId" th:value="${tag.id}">
+                <button type="submit">추가</button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+<div th:if="${tags == null or tags.isEmpty()}">
+    <p>등록된 태그가 없습니다.</p>
+</div>
+
+<!-- 현재 태스크에 적용된 태그 목록 -->
+<div>
+    <h2>현재 적용된 태그</h2>
+    <div th:if="${taskTags != null and !taskTags.isEmpty()}">
+        <ul>
+            <li th:each="tag : ${taskTags}">
+                <span th:text="${tag.name}">태그 이름</span>
+                <form th:action="@{/projects/{projectId}/tasks/{taskId}/tags/{tagId}/delete(projectId=${projectId}, taskId=${taskId}, tagId=${tag.id})}"
+                      method="post" style="display: inline;">
+                    <button type="submit">제거</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <div th:if="${taskTags == null or taskTags.isEmpty()}">
+        <p>이 업무에 적용된 태그가 없습니다.</p>
+    </div>
+</div>
+
+<div>
+    <a th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${taskId})}">업무로 돌아가기</a>
+</div>
+</body>
+</html>

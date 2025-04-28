@@ -1,8 +1,8 @@
 package com.nhnacademy.gateway.controller;
 
 import com.nhnacademy.gateway.model.member.domain.Auth;
-import com.nhnacademy.gateway.model.member.domain.MemberCreateCommand;
-import com.nhnacademy.gateway.model.member.domain.MemberInfoResponse;
+import com.nhnacademy.gateway.model.member.domain.ProjectMemberCreateCommand;
+import com.nhnacademy.gateway.model.member.domain.ProjectMemberInfoResponse;
 import com.nhnacademy.gateway.model.project.domain.ProjectCreateCommand;
 import com.nhnacademy.gateway.model.project.domain.ProjectResponse;
 import com.nhnacademy.gateway.model.project.domain.ProjectStatus;
@@ -93,16 +93,16 @@ public class ProjectContoller {
     public ModelAndView getMembers(@PathVariable Long id) {
         ModelAndView mav = new ModelAndView("members-list");
         String loginMemberId = (String) redisTemplate.opsForValue().get(SEESIONID);
-        List<MemberCreateCommand> response = projectService.findAllProjectMembers(loginMemberId,id);
+        List<ProjectMemberCreateCommand> response = projectService.findAllProjectMembers(loginMemberId,id);
         mav.addObject("members", response);
         mav.addObject("id", id);
         return mav;
     }
 
     @PostMapping("/{id}/members")
-    public String addMember( @ModelAttribute MemberCreateCommand newMember,@PathVariable Long id) {
+    public String addMember(@ModelAttribute ProjectMemberCreateCommand newMember, @PathVariable Long id) {
         String loginMemberId = (String) redisTemplate.opsForValue().get(SEESIONID);
-        projectService.addProjectMember(loginMemberId,newMember,id);
+//        projectService.addProjectMember(loginMemberId,newMember,id);
         return "redirect:/projects/{id}/members";
     }
 
@@ -118,7 +118,7 @@ public class ProjectContoller {
     public ModelAndView getMember(@PathVariable Long id, @PathVariable String memberId) {
         ModelAndView mav = new ModelAndView("user-info");
         User user = userService.getUser(memberId);
-        MemberInfoResponse userInfoResponse = new MemberInfoResponse(user,null);
+        ProjectMemberInfoResponse userInfoResponse = new ProjectMemberInfoResponse(user,null);
         mav.addObject("user", userInfoResponse);
         mav.addObject("id", id);
         return mav;
