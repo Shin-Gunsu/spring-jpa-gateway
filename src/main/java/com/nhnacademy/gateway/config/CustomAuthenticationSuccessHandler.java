@@ -1,23 +1,28 @@
 package com.nhnacademy.gateway.config;
 
 import com.nhnacademy.gateway.model.user.AuthedUser;
-
 import com.nhnacademy.gateway.model.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 @Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
     final
     UserService userService;
     final
@@ -44,16 +49,19 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 }
             }
         }
+        System.out.println("authentication : "  + authentication.getClass());
         String sessionId = UUID.randomUUID().toString();
 
-        AuthedUser authedUser = (AuthedUser) authentication.getPrincipal();
+        AuthedUser authedUser = (AuthedUser)authentication.getPrincipal();
+
         Cookie sessionCookie = new Cookie("SESSIONID", sessionId);
         System.out.println("sessionId: " + sessionId);
         sessionCookie.setHttpOnly(true);
         sessionCookie.setMaxAge(60 * 60);
         sessionCookie.setPath("/");
         response.addCookie(sessionCookie);
-        sessionRedisTemplate.opsForValue().set(sessionId, authedUser.getUser().getId());
+        sessionRedisTemplate.opsForValue().set(sessionId, authedUser.getUser());
+
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

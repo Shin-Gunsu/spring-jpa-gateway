@@ -1,11 +1,9 @@
-package com.nhnacademy.gateway.model;
+package com.nhnacademy.gateway.model.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Status {
     REGISTERED, DORMANT, WITHDRAWN;
-
     @JsonCreator
     public static Status fromString(String str){
         for (Status status : Status.values()) {

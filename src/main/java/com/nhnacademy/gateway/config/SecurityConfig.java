@@ -2,12 +2,12 @@ package com.nhnacademy.gateway.config;
 
 
 import com.nhnacademy.gateway.filter.UserAuthenticationFilter;
-
 import com.nhnacademy.gateway.model.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,72 +33,69 @@ public class SecurityConfig {
     CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     final
     CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    final
+    ApiAuthenticationProvider apiAuthenticationProvider;
 
 
     UserAuthenticationFilter userAuthenticationFilter;
 
     final
     RedisTemplate<String, Object> sessionRedisTemplate;
+    final
+    UserService userService;
 
-    final UserService userService;
-
-    public SecurityConfig(CustomAuthenticationFailureHandler customAuthenticationFailureHandler, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,  RedisTemplate<String, Object> sessionRedisTemplate,UserService userService) {
+    public SecurityConfig(CustomAuthenticationFailureHandler customAuthenticationFailureHandler, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler, RedisTemplate<String, Object> sessionRedisTemplate, UserService userService, ApiAuthenticationProvider apiAuthenticationProvider) {
         this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         this.sessionRedisTemplate = sessionRedisTemplate;
         this.userService = userService;
+        this.apiAuthenticationProvider = apiAuthenticationProvider;
     }
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomLogoutHandler customLogoutHandler) throws Exception {
 
-//
-//
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .formLogin((formLogin) ->
-//                formLogin.loginPage("/login")
-//                        .usernameParameter("id")
-//                        .passwordParameter("password")
-//                        .loginProcessingUrl("/login/process")
-//                        .successHandler(customAuthenticationSuccessHandler)
-//                        .failureHandler(customAuthenticationFailureHandler)
-//
-//        ).authorizeHttpRequests(authorizeRequests ->
-//                authorizeRequests.requestMatchers("/main").hasRole("REGISTERED")
-//                        .requestMatchers("/login/**").permitAll()
-//                        .anyRequest().authenticated()
-//
-//        ).logout((logout)->logout.deleteCookies("A-COOKIE", "B-COOKIE")
-//                .invalidateHttpSession(true)
-//                .logoutUrl("/logout")
-//                .logoutSuccessUrl("/")
-//                        .logoutSuccessHandler(customLogoutHandler)
-//
-//        )
-//                .exceptionHandling(ex -> ex.accessDeniedPage("/403"));
-//
-//
-//        http.addFilterBefore(new UserAuthenticationFilter(sessionRedisTemplate, passwordEncoder(), userService), UsernamePasswordAuthenticationFilter.class);
 
+
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authenticationProvider(apiAuthenticationProvider)
+                .formLogin((formLogin) ->
+                formLogin.loginPage("/login")
+                        .usernameParameter("id")
+                        .passwordParameter("password")
+                        .loginProcessingUrl("/auth/login/process")
+                        .successHandler(customAuthenticationSuccessHandler)
+//                        .failureHandler(customAuthenticationFailureHandler)
+
+        ).authorizeHttpRequests(authorizeRequests ->
+                authorizeRequests.requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/member/**").hasAnyRole("ADMIN","MEMBER")
+                        .requestMatchers("/google/**").hasAnyRole("ADMIN","GOOGLE")
+                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/members/**").permitAll()
+                        .requestMatchers("/auth/blocked").permitAll()
+                        .requestMatchers("/user/register").permitAll()
+                        .anyRequest().authenticated()
+
+        ).logout((logout)->logout.deleteCookies("A-COOKIE", "B-COOKIE")
+                .invalidateHttpSession(true)
+                .logoutUrl("/auth/logout")
+                .logoutSuccessUrl("/")
+                        .logoutSuccessHandler(customLogoutHandler)
+
+        )
+                .exceptionHandling(ex -> ex.accessDeniedPage("/403"));
+
+
+        http.addFilterBefore(new UserAuthenticationFilter(sessionRedisTemplate, userService, passwordEncoder()), UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
     }
 
 
-    @Bean
-    public MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
-        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy);
-        return expressionHandler;
-    }
 
-
-    @Bean
-    public RoleHierarchy roleHierarchy() {
-        return RoleHierarchyImpl.fromHierarchy("ROLE_ADMIN > ROLE_MEMBER"); //// ROLE_ADMIN은 ROLE_MEMBER보다 상위
-    }
 
     @Bean
     static PasswordEncoder passwordEncoder() {

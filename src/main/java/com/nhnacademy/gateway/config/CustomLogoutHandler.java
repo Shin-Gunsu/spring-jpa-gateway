@@ -45,6 +45,6 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
         expired.setMaxAge(0);
         response.addCookie(expired);
 
-        response.sendRedirect("/");
+        response.sendRedirect("/login");
     }
 }

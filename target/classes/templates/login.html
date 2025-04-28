@@ -5,14 +5,14 @@
     <title>Login</title>
 </head>
 <body>
-<form method="post" action="/login/process">
+<form method="post" action="/auth/login/process">
     <span text="id" />id: <input type="text" name="id" /><br />
     <span text="password" />password: <input type="password" name="password" /><br />
     <input type="submit" />
-</form>
 
-<form method="get">
-    <a href="/register"></a>
+</form>
+<form method="get" action="/user/register">
+    <a href="/user/register">register</a>
 </form>
 </body>
 </html>

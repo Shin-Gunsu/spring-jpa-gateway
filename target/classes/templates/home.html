@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <title>Home</title>
+</head>
+<body>
+Welcome, <span th:text="${user.getUser().getId()}" /><br />
+<span th:text="${user.getUser().getEmail()}" /><br />
+<span th:text="${user.getUser().getStatus()}" /><br />
+
+<a href="/auth/logout">Logout</a>
+<br>
+
+</body>
+</html>

@@ -2,13 +2,13 @@ package com.nhnacademy.gateway.filter;
 
 import com.nhnacademy.gateway.model.user.AuthedUser;
 import com.nhnacademy.gateway.model.user.User;
-
 import com.nhnacademy.gateway.model.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +27,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     private final RedisTemplate<String, Object> sessionRedisTemplate;
 
     private final UserService userService;
-    public UserAuthenticationFilter(RedisTemplate<String, Object> sessionRedisTemplate,PasswordEncoder passwordEncoder, UserService userService) {
+    public UserAuthenticationFilter(RedisTemplate<String, Object> sessionRedisTemplate, UserService userService, PasswordEncoder passwordEncoder) {
         this.sessionRedisTemplate = sessionRedisTemplate;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -48,18 +48,19 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
         if (sessionId != null) {
             Object o = sessionRedisTemplate.opsForValue().get(sessionId);
-            String id = (String) o;
-            System.out.println("id: " + id);
-            if (id != null) {
-                User user = userService.getUser(id);
+            if (o instanceof User user) {
                 AuthedUser authedUser = new AuthedUser(user, passwordEncoder);
-                Authentication auth = new PreAuthenticatedAuthenticationToken(authedUser, null, authedUser.getAuthorities());
-                auth.setAuthenticated(true);
+                Authentication auth = new PreAuthenticatedAuthenticationToken(
+                        authedUser,
+                        null,
+                        authedUser.getAuthorities()
+                );
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 
 
+        // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
     }
 

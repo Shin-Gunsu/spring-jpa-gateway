@@ -19,6 +19,6 @@ public class ProjectMemberInfoResponse {
     public ProjectMemberInfoResponse(User user, Auth auth) {
         this.id = user.getId();
         this.email = user.getEmail();
-        this.status = user.getStatus();
+        this.status = user.getStatus().toString();
     }
 }

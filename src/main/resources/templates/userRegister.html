@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Register</title>
+</head>
+<body>
+<form method="post" action="/user/register">
+    <span text="userId"></span>id: <label>
+    <input type="text" name="userId" />
+</label><br />
+    <span text="password"></span>password: <label>
+    <input type="password" name="password" />
+</label><br />
+    <span text="email"></span>email: <label>
+    <input type="email" name="email" />
+</label><br />
+    <label>
+        <select name="status" required>
+            <option value="REGISTERED">REGISTERED</option>
+            <option value="DORMANT">DORMANT</option>
+            <option value="WITHDRAWN">WITHDRAWN</option>
+        </select>
+    </label>
+
+    <input type="submit" />
+</form>
+
+</body>
+</html>

@@ -8,10 +8,13 @@ import com.nhnacademy.gateway.model.project.domain.ProjectResponse;
 import com.nhnacademy.gateway.model.project.domain.ProjectStatus;
 import com.nhnacademy.gateway.model.project.domain.ProjectStatusUpdateCommand;
 import com.nhnacademy.gateway.model.project.service.ProjectService;
-import com.nhnacademy.gateway.model.user.User;
 
+import com.nhnacademy.gateway.model.user.AuthedUser;
+import com.nhnacademy.gateway.model.user.User;
 import com.nhnacademy.gateway.model.user.service.UserService;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -115,12 +118,11 @@ public class ProjectContoller {
     }
 
     @GetMapping("/{id}/members/{memberId}")
-    public ModelAndView getMember(@PathVariable Long id, @PathVariable String memberId) {
+    public ModelAndView getMember(@PathVariable Long id, @PathVariable String memberId, @AuthenticationPrincipal AuthedUser user) {
         ModelAndView mav = new ModelAndView("user-info");
-        User user = userService.getUser(memberId);
-        ProjectMemberInfoResponse userInfoResponse = new ProjectMemberInfoResponse(user,null);
-        mav.addObject("user", userInfoResponse);
-        mav.addObject("id", id);
+        String userName = user.getUsername();
+
+        mav.addObject("user", user);
         return mav;
     }
 
